@@ -13,6 +13,28 @@ public class AssetService : IAssetService
         _context = context;
     }
 
+    public async Task<AssetOperationResult> AssignAssetAsync(int assetId, int employeeId)
+    {
+        var asset = await _context.Assets.FindAsync(assetId);
+        if (asset is null)
+        {
+            return AssetOperationResult.AssetNotFound;
+        }
+        bool exists = await _context.Employees.AnyAsync(e => e.Id == employeeId);
+        if (!exists)
+        {
+            return AssetOperationResult.EmployeeNotFound;
+        }
+        if (asset.Status != AssetStatus.Available)
+        {
+            return AssetOperationResult.AssetStateIncompatible;
+        }
+        asset.EmployeeId = employeeId;
+        asset.Status = AssetStatus.Assigned;
+        await _context.SaveChangesAsync();
+        return AssetOperationResult.Success;
+    }
+
     // "async" in every method to be able to use "await"
     public async Task<Asset> CreateAssetAsync(Asset asset)
     {
@@ -66,5 +88,22 @@ public class AssetService : IAssetService
         existingAsset.Type = asset.Type;
         await _context.SaveChangesAsync();
         return true;
+    }
+
+    public async Task<AssetOperationResult> ReturnAssetAsync(int assetId)
+    {
+        var asset = await _context.Assets.FindAsync(assetId);
+        if (asset is null)
+        {
+            return AssetOperationResult.AssetNotFound;
+        }
+        if (asset.Status != AssetStatus.Assigned)
+        {
+            return AssetOperationResult.AssetStateIncompatible;
+        }
+        asset.EmployeeId = null;
+        asset.Status = AssetStatus.Available;
+        await _context.SaveChangesAsync();
+        return AssetOperationResult.Success;
     }
 }
