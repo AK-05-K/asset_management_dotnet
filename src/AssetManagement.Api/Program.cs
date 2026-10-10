@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using AssetManagement.Api.Data;
+using AssetManagement.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,8 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<IAssetService, AssetService>();
 
 var app = builder.Build();
 
