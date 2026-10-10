@@ -49,4 +49,27 @@ public class AssetsController : ControllerBase
         var createdAsset = await _assetService.CreateAssetAsync(asset);
         return CreatedAtAction(nameof(GetById), new { id = createdAsset.Id }, createdAsset.ToDto());
     }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateAsset(int id, CreateAssetDto dto)
+    {
+        var asset = dto.ToEntity();
+        var updated = await _assetService.ModifyAssetAsync(id, asset);
+        if (!updated)
+        {
+            return NotFound();
+        }
+        return NoContent();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteAsset(int id)
+    {
+        var assetDeleted = await _assetService.DeleteAssetAsync(id);
+        if (!assetDeleted)
+        {
+            return NotFound();
+        }
+        return NoContent();
+    }
 }
