@@ -72,4 +72,21 @@ public class AssetsController : ControllerBase
         }
         return NoContent();
     }
+
+    [HttpPost("{assetId}/assign")]
+    public async Task<IActionResult> AssignAsset(int assetId, AssignAssetDto dto)
+    {
+        var result = await _assetService.AssignAssetAsync(assetId, dto.EmployeeId);
+
+        return result switch
+        {
+            AssetOperationResult.Success => NoContent(),
+            AssetOperationResult.AssetNotFound => NotFound("Asset not found."),
+            AssetOperationResult.EmployeeNotFound => NotFound("Employee not found."),
+            AssetOperationResult.AssetStateIncompatible => Conflict("Asset is not available."),
+            _ => StatusCode(500)
+        };
+    }
+
+    
 }

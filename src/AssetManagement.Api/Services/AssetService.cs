@@ -78,7 +78,7 @@ public class AssetService : IAssetService
 
     public async Task<bool> ModifyAssetAsync(int id, Asset asset)
     {
-        var existingAsset = await _context.Assets.FindAsync(id); 
+        var existingAsset = await _context.Assets.FindAsync(id);
         if (existingAsset is null)
         {
             return false;
