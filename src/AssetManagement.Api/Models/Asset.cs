@@ -11,5 +11,4 @@ public class Asset
     public AssetType Type { get; set; }
     public AssetStatus Status { get; set; }
     
-    
 }
