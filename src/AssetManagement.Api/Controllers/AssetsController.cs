@@ -88,5 +88,17 @@ public class AssetsController : ControllerBase
         };
     }
 
-    
+    [HttpPost("{assetId}/return")]
+    public async Task<IActionResult> ReturnAsset(int assetId)
+    {
+        var result = await _assetService.ReturnAssetAsync(assetId);
+
+        return result switch
+        {
+            AssetOperationResult.Success => NoContent(),
+            AssetOperationResult.AssetNotFound => NotFound("Asset not found."),
+            AssetOperationResult.AssetStateIncompatible => Conflict("Asset is not assigned."),
+            _ => StatusCode(500)
+        };
+    }
 }
