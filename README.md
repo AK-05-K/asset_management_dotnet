@@ -10,7 +10,7 @@ Built to learn **.NET** and its ecosystem, inspired by real-world IT asset manag
 - **.NET 10** / **C#**
 - **ASP.NET Core Web API** (controller-based)
 - **Entity Framework Core** with **SQLite**
-- OpenAPI document generation
+- OpenAPI document generation with interactive API reference via **Scalar**
 
 ## Architecture
 
@@ -60,7 +60,17 @@ dotnet run
 ```
 
 The API is then available at the URL shown in the terminal (e.g. `http://localhost:5101`).
-The OpenAPI document is served at `/openapi/v1.json` in development.
+
+## API Documentation
+
+In development, the API provides an interactive reference powered by [Scalar](https://scalar.com):
+
+- **Scalar UI:** `http://localhost:5101/scalar`
+- **OpenAPI document:** `http://localhost:5101/openapi/v1.json`
+
+Scalar reads the OpenAPI document that ASP.NET Core generates from the controllers. It lists all endpoints with their parameters, request bodies and possible responses, and allows sending requests directly from the browser. Because the document is generated from the code, the documentation always stays in sync with the implementation.
+
+Both are only available in the `Development` environment.
 
 ## API Endpoints
 
