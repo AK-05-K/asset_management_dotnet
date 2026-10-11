@@ -53,4 +53,15 @@ public class EmployeesController : ControllerBase
         var dtoAssets = assets.Select(x => x.ToDto()).ToList();
         return Ok(dtoAssets);
     }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteEmployee(int id)
+    {
+        var employeeDeleted = await _employeeService.DeleteEmployeeAsync(id);
+        if (!employeeDeleted)
+        {
+            return NotFound();
+        }
+        return NoContent();
+    } 
 }

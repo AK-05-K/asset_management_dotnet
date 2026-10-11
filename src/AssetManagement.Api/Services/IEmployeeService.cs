@@ -8,4 +8,5 @@ public interface IEmployeeService
     Task<Employee?> GetByIdAsync(int id);
     Task<Employee> CreateEmployeeAsync(Employee employee);
     Task<List<Asset>?> GetAssetsByEmployeeIdAsync(int id); 
+    Task<bool> DeleteEmployeeAsync(int id);
 }

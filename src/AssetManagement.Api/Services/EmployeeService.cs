@@ -7,7 +7,7 @@ namespace AssetManagement.Api.Services;
 public class EmployeeService : IEmployeeService
 {
     private readonly AppDbContext _context;
-    
+
     public EmployeeService(AppDbContext context)
     {
         _context = context;
@@ -18,6 +18,32 @@ public class EmployeeService : IEmployeeService
         _context.Employees.Add(employee);
         await _context.SaveChangesAsync();
         return employee;
+    }
+
+    public async Task<bool> DeleteEmployeeAsync(int id)
+    {
+        // load employee with all their assigned assets
+        var employee = await _context.Employees
+            .Include(e => e.Assets)
+            .FirstOrDefaultAsync(e => e.Id == id);
+
+        // check if employee exists
+        if (employee is null)
+        {
+            return false;
+        }
+
+        // delete employee in assets and set status to "available"
+        foreach (var asset in employee.Assets)
+        {
+            asset.EmployeeId = null;
+            asset.Status = AssetStatus.Available;
+        }
+
+        // delete employee and save changes
+        _context.Employees.Remove(employee);
+        await _context.SaveChangesAsync();
+        return true;
     }
 
     public async Task<List<Employee>> GetAllEmployeesAsync()
